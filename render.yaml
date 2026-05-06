@@ -1,0 +1,16 @@
+# Render Blueprint：连接 GitHub 仓库后在 Dashboard 里用「Blueprint」导入本文件，或手动创建 Web Service 并抄下面的命令。
+# 文档：https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: brand-copy-studio
+    runtime: node
+    plan: free
+    region: singapore
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DEEPSEEK_API_KEY
+        sync: false

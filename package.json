@@ -1,0 +1,37 @@
+{
+  "name": "brand-copy-studio",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "dev:api": "node server.js",
+    "dev:client": "vite",
+    "dev:all": "concurrently -n api,web -c cyan,magenta \"npm run dev:api\" \"npm run dev:client\"",
+    "restart:api": "sh -c 'for p in $(lsof -ti tcp:3789 2>/dev/null); do kill -9 \"$p\" 2>/dev/null; done; exec node server.js'",
+    "restart:web": "sh -c 'for p in $(lsof -ti tcp:5173 2>/dev/null); do kill -9 \"$p\" 2>/dev/null; done; exec vite'",
+    "restart:all": "sh -c 'for p in $(lsof -ti tcp:3789 2>/dev/null) $(lsof -ti tcp:5173 2>/dev/null); do kill -9 \"$p\" 2>/dev/null; done; exec npm run dev:all'",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^5.5.1",
+    "antd": "^5.22.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "concurrently": "^9.1.0",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11"
+  }
+}
