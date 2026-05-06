@@ -19,18 +19,25 @@ npm run build && npm start
 
 ## 上传到 GitHub
 
-在项目根目录执行（将 `你的用户名` / `仓库名` 换成自己的）：
+本地仓库若已初始化，只需关联远程并推送（勿提交 `.env`，已在 `.gitignore` 中忽略）：
 
 ```bash
-git init
-git add .
-git commit -m "Initial commit: brand copy studio"
-git branch -M main
-git remote add origin https://github.com/你的用户名/仓库名.git
+cd /Users/didi/Desktop/brand-copy-studio
+git remote remove origin 2>/dev/null
+git remote add origin https://github.com/LUOHENG-SHARK/curosstudy.git
 git push -u origin main
 ```
 
-先在 GitHub 网页新建空仓库（不要勾选自动添加 README），再执行上面的 `remote` 与 `push`。勿提交 `.env`（已在 `.gitignore` 中忽略）。
+若已添加过 `origin`，可改用：`git remote set-url origin https://github.com/LUOHENG-SHARK/curosstudy.git`。
+
+**认证**：HTTPS 推送需在终端登录 GitHub（浏览器弹窗或 Personal Access Token）。也可改用 SSH：
+
+```bash
+git remote set-url origin git@github.com:LUOHENG-SHARK/curosstudy.git
+git push -u origin main
+```
+
+或使用 [GitHub CLI](https://cli.github.com/)：`gh auth login` 后再执行 `git push`。
 
 ## 一键部署（推荐 Render）
 
