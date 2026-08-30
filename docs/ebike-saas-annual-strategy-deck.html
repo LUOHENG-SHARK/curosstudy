@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>共享两轮 SaaS 三年规划与年度产品策略</title>
+<style>
+  :root {
+    --ink: #14202b;
+    --ink-2: #3d4f5f;
+    --muted: #6b7c8c;
+    --line: #e3e8ee;
+    --line-2: #f0f3f6;
+    --bg: #eef1f5;
+    --paper: #ffffff;
+    --navy: #123a5e;
+    --teal: #0d8b80;
+    --amber: #b4690e;
+    --rose: #a83232;
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro SC", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+    font-size: 15px;
+    line-height: 1.72;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- progress ---------- */
+  #progress {
+    position: fixed; top: 0; left: 0; height: 3px; width: 0;
+    background: linear-gradient(90deg, var(--navy), var(--teal));
+    z-index: 90; transition: width .28s ease;
+  }
+
+  /* ---------- deck / slide shell ---------- */
+  .deck { padding: 34px 22px 92px; }
+
+  .slide {
+    display: none;
+    width: min(1180px, 94vw);
+    margin: 0 auto;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 10px 34px rgba(18, 40, 62, .09);
+    padding: 46px 56px 40px;
+    min-height: min(660px, 82vh);
+    flex-direction: column;
+    position: relative;
+  }
+  .slide.active { display: flex; }
+
+  body.doc .deck { padding-bottom: 40px; }
+  body.doc .slide { display: flex; margin-bottom: 26px; }
+
+  /* ---------- slide header ---------- */
+  .kicker {
+    font-size: 12.5px;
+    letter-spacing: .14em;
+    color: var(--teal);
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .slide h1 {
+    font-size: 30px;
+    line-height: 1.34;
+    margin: 0 0 6px;
+    letter-spacing: -.01em;
+    font-weight: 750;
+    color: var(--navy);
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 0 0 22px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line-2);
+  }
+  .body { flex: 1; min-height: 0; }
+
+  /* ---------- typography ---------- */
+  h2.sec {
+    font-size: 14px;
+    font-weight: 750;
+    color: var(--navy);
+    margin: 22px 0 10px;
+    padding-left: 10px;
+    border-left: 3px solid var(--teal);
+    letter-spacing: .01em;
+  }
+  h2.sec:first-child { margin-top: 0; }
+
+  ul, ol { margin: 0 0 12px; padding-left: 21px; }
+  li { margin-bottom: 7px; }
+  li::marker { color: var(--teal); }
+  p { margin: 0 0 12px; }
+  strong { color: var(--navy); font-weight: 700; }
+
+  /* ---------- callouts ---------- */
+  .callout {
+    background: #f7fafb;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--teal);
+    border-radius: 10px;
+    padding: 16px 20px;
+    margin: 0 0 16px;
+  }
+  .callout .label {
+    font-size: 11.5px; font-weight: 750; letter-spacing: .1em;
+    color: var(--teal); text-transform: uppercase; display: block; margin-bottom: 6px;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+  .callout.lead { background: #f4f8fa; border-left-color: var(--navy); }
+  .callout.lead .label { color: var(--navy); }
+  .callout.lead p { font-size: 19px; line-height: 1.6; font-weight: 650; color: var(--navy); }
+  .callout.warn { background: #fdf8f1; border-left-color: var(--amber); }
+  .callout.warn .label { color: var(--amber); }
+  .callout.risk { background: #fdf5f5; border-left-color: var(--rose); }
+  .callout.risk .label { color: var(--rose); }
+
+  /* ---------- tags ---------- */
+  .tag {
+    display: inline-block; font-size: 11.5px; font-weight: 700;
+    padding: 1px 8px; border-radius: 999px; vertical-align: middle;
+    margin-left: 6px; letter-spacing: .02em;
+  }
+  .tag.todo { background: #fbf0dd; color: var(--amber); }
+  .tag.key  { background: #dff0ee; color: var(--teal); }
+
+  /* ---------- tables ---------- */
+  table { width: 100%; border-collapse: collapse; margin: 4px 0 16px; font-size: 14px; }
+  th, td { text-align: left; padding: 10px 13px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th {
+    background: #f5f8fa; color: var(--navy); font-weight: 700;
+    font-size: 12.5px; letter-spacing: .04em; border-bottom: 1.5px solid var(--line);
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num { color: var(--teal); font-weight: 700; white-space: nowrap; }
+
+  /* ---------- grids ---------- */
+  .grid { display: grid; gap: 12px; margin-bottom: 16px; }
+  .g2 { grid-template-columns: repeat(2, 1fr); }
+  .g3 { grid-template-columns: repeat(3, 1fr); }
+  .g4 { grid-template-columns: repeat(4, 1fr); }
+
+  .card {
+    border: 1px solid var(--line);
+    border-radius: 11px;
+    padding: 14px 16px;
+    background: #fbfcfd;
+  }
+  .card .n {
+    font-size: 11.5px; font-weight: 750; color: var(--teal);
+    letter-spacing: .1em; display: block; margin-bottom: 4px;
+  }
+  .card .t { font-weight: 700; color: var(--navy); display: block; margin-bottom: 4px; }
+  .card .d { font-size: 13px; color: var(--ink-2); line-height: 1.6; }
+
+  /* stat cards */
+  .stat { text-align: center; padding: 16px 12px; }
+  .stat .v { font-size: 27px; font-weight: 780; color: var(--navy); line-height: 1.2; }
+  .stat .v small { font-size: 15px; font-weight: 650; }
+  .stat .k { font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+
+  /* ---------- chain (bridge page) ---------- */
+  .chain { list-style: none; padding: 0; margin: 0 0 8px; }
+  .chain li {
+    position: relative;
+    background: #f7fafb;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 18px;
+    margin-bottom: 26px;
+    font-weight: 620;
+    color: var(--ink);
+  }
+  .chain li::after {
+    content: "↓";
+    position: absolute; left: 50%; bottom: -24px; transform: translateX(-50%);
+    color: var(--teal); font-size: 17px; font-weight: 700; line-height: 1;
+  }
+  .chain li:last-child { margin-bottom: 0; }
+  .chain li:last-child::after { display: none; }
+  .chain li.end {
+    background: var(--navy); color: #fff; border-color: var(--navy);
+    font-weight: 720; font-size: 16px;
+  }
+
+  /* ---------- cover ---------- */
+  .cover { justify-content: center; align-items: flex-start; padding: 70px 64px; }
+  .cover .eyebrow {
+    font-size: 13px; letter-spacing: .2em; color: var(--teal);
+    font-weight: 700; margin-bottom: 20px;
+  }
+  .cover h1 {
+    font-size: 44px; line-height: 1.28; margin: 0 0 18px;
+    max-width: 20em; color: var(--navy);
+  }
+  .cover .claim {
+    font-size: 17px; color: var(--ink-2); max-width: 44em;
+    line-height: 1.8; margin-bottom: 32px;
+  }
+  .cover .meta {
+    display: flex; gap: 34px; flex-wrap: wrap;
+    border-top: 1px solid var(--line); padding-top: 20px; width: 100%;
+  }
+  .cover .meta div .k { font-size: 12px; color: var(--muted); }
+  .cover .meta div .v { font-weight: 700; color: var(--navy); font-size: 15px; }
+
+  /* ---------- speaker notes ---------- */
+  .notes {
+    display: none;
+    margin-top: 14px;
+    border-top: 1px dashed var(--line);
+    padding-top: 12px;
+    font-size: 13px; color: var(--muted);
+  }
+  .notes b { color: var(--teal); font-weight: 700; }
+  body.notes-on .notes { display: block; }
+
+  /* ---------- slide footer ---------- */
+  .foot {
+    margin-top: auto; padding-top: 16px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 12px; color: var(--muted);
+    border-top: 1px solid var(--line-2);
+  }
+  .foot .pg { font-weight: 700; color: var(--ink-2); }
+
+  /* ---------- HUD ---------- */
+  #hud {
+    position: fixed; right: 20px; bottom: 18px; z-index: 80;
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,.94);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 6px 8px;
+    box-shadow: 0 6px 20px rgba(18,40,62,.12);
+    backdrop-filter: blur(6px);
+  }
+  #hud button {
+    border: none; background: #f2f5f8; color: var(--navy);
+    width: 30px; height: 30px; border-radius: 50%;
+    font-size: 15px; cursor: pointer; line-height: 1;
+  }
+  #hud button:hover { background: #e4eaf0; }
+  #hud .idx { font-size: 12.5px; color: var(--ink-2); font-weight: 700; padding: 0 6px; min-width: 52px; text-align: center; }
+  #hud .sep { width: 1px; height: 20px; background: var(--line); }
+  #hud .toggle {
+    width: auto; padding: 0 11px; border-radius: 999px;
+    font-size: 12px; font-weight: 700; height: 30px;
+  }
+  #hud .toggle.on { background: var(--navy); color: #fff; }
+
+  #help {
+    position: fixed; left: 20px; bottom: 20px; z-index: 80;
+    font-size: 12px; color: var(--muted);
+    background: rgba(255,255,255,.9); border: 1px solid var(--line);
+    border-radius: 8px; padding: 6px 11px;
+  }
+  #help kbd {
+    font-family: inherit; background: #eef2f6; border-radius: 4px;
+    padding: 0 5px; font-size: 11.5px; color: var(--ink-2); font-weight: 700;
+  }
+
+  /* ---------- print ---------- */
+  @media print {
+    @page { size: A4 landscape; margin: 10mm; }
+    body { background: #fff; }
+    #hud, #help, #progress { display: none !important; }
+    .deck { padding: 0; }
+    .slide {
+      display: flex !important;
+      width: 100%; min-height: auto;
+      box-shadow: none; border: none; border-radius: 0;
+      padding: 0 0 12px; margin: 0 0 12px;
+      break-after: page; page-break-after: always;
+    }
+    .slide:last-child { break-after: auto; page-break-after: auto; }
+    .notes { display: none !important; }
+    .callout, .card, table, .chain li { break-inside: avoid; page-break-inside: avoid; }
+  }
+
+  @media (max-width: 820px) {
+    .slide { padding: 30px 22px 26px; }
+    .g2, .g3, .g4 { grid-template-columns: 1fr; }
+    .cover h1 { font-size: 30px; }
+    .slide h1 { font-size: 23px; }
+  }
+</style>
+</head>
+<body>
+<div id="progress"></div>
+
+<div class="deck" id="deck">
+
+  <!-- ============ COVER ============ -->
+  <section class="slide cover">
+    <div class="eyebrow">年度产品策略汇报</div>
+    <h1>共享两轮 SaaS<br />三年规划与明年产品迭代策略</h1>
+    <p class="claim">
+      以三年理想态框定方向，以明年的迁移战役夯实平台复制能力。<br />
+      本次汇报的落点是明年做什么、不做什么，以及需要拍板的三件事。
+    </p>
+    <div class="meta">
+      <div><div class="k">核心战役</div><div class="v">承接 8-10 万辆存量车迁移</div></div>
+      <div><div class="k">规模变化</div><div class="v">运营主体 19 → 60-70</div></div>
+      <div><div class="k">关键指标</div><div class="v">上线周期 30+ 天 → 15 天</div></div>
+    </div>
+    <div class="notes">
+      <b>讲法</b>：封面停留 10 秒，直接进结论页。全篇骨架为第 1、3、5、7、11 页，
+      时间被压缩到 15 分钟时只讲这五页也能成立。
+    </div>
+  </section>
+
+  <!-- ============ 1 结论 ============ -->
+  <section class="slide">
+    <div class="kicker">Page 01 · 结论先行</div>
+    <h1>明年以迁移战役为核心，把开城能力产品化</h1>
+    <p class="subtitle">先给结论，再给论据。这一页讲完，全场主张已经完整。</p>
+    <div class="body">
+      <div class="callout lead">
+        <span class="label">一句话结论</span>
+        <p>明年以承接 8-10 万辆存量车迁移为唯一核心战役，通过设备接入框架化、开城流程线上化、结算对账产品化、培训自助化，把新增运营单元上线周期从 30 天以上压到 15 天以内。</p>
+      </div>
+
+      <div class="grid g4">
+        <div class="card stat"><div class="v">40-50<small> 个</small></div><div class="k">新增全新运营商</div></div>
+        <div class="card stat"><div class="v">19 → 60-70</div><div class="k">运营主体总数</div></div>
+        <div class="card stat"><div class="v">约 1<small> 个 / 周</small></div><div class="k">平均上线节奏</div></div>
+        <div class="card stat"><div class="v">3.5<small> 倍</small></div><div class="k">相对当前体量</div></div>
+      </div>
+
+      <h2 class="sec">为什么是这件事</h2>
+      <p>迁移不是一次性业务任务，而是把平台复制能力推向 3.5 倍规模的真实压力测试。打完这一仗，三年增长飞轮的地基就建好了。</p>
+
+      <h2 class="sec">明年四个抓手</h2>
+      <div class="grid g4">
+        <div class="card"><span class="n">01</span><span class="t">设备接入框架化</span><span class="d">决定迁移能否如期完成</span></div>
+        <div class="card"><span class="n">02</span><span class="t">开城流程线上化</span><span class="d">准入从 14 天压到 5 天</span></div>
+        <div class="card"><span class="n">03</span><span class="t">结算对账产品化</span><span class="d">分润模式下的信任底线</span></div>
+        <div class="card"><span class="n">04</span><span class="t">培训与协作自助化</span><span class="d">解除当前的人力单点</span></div>
+      </div>
+
+      <h2 class="sec">需要决策三件事</h2>
+      <ol>
+        <li>兼容性白名单是否作为对外承诺前提</li>
+        <li>是否认可软件先行、硬件后置的路径</li>
+        <li>迁移工程与培训自助化是否单独配资源</li>
+      </ol>
+
+      <div class="notes">
+        <b>讲法</b>：控制在 90 秒内。若 Leader 在此打断提问，说明结论页是有效的。
+        <b>待补</b>：迁移带来的业务收益量级，见第 5 页测算框架。
+      </div>
+    </div>
+    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">01</span></div>
+  </section>
+
+  <!-- ============ 2 三年方向 ============ -->
+  <section class="slide">
+    <div class="kicker">Page 02 · 三年方向</div>
+    <h1>三年理想态：只定方向，不做精确预测</h1>
+    <p class="subtitle">三年目标承担方向约束的作用，明年策略才是本次评审的主体。</p>
+    <div class="body">
+      <h2 class="sec">业务定位</h2>
+      <p>不是独立售卖的商业 SaaS，而是<strong>青桔的轻资产扩张工具与品牌隔离载体</strong>。在部分城市做运营商，在大部分城市做平台，海外以电单车单品类轻资产切入。</p>
+
+      <div class="grid g2">
+        <div class="card">
+          <span class="n">长期价值 一</span>
+          <span class="t">差土壤区域的低成本正收益</span>
+          <span class="d">在青桔自营不划算的区域，用较低投入获取正向收益。</span>
+        </div>
+        <div class="card">
+          <span class="n">长期价值 二</span>
+          <span class="t">马甲品牌突破独家城市限制</span>
+          <span class="d">以独立品牌与运营主体进入原本受限的城市，降低政策影响。</span>
+        </div>
+      </div>
+
+      <h2 class="sec">三年业务形态：三螺旋</h2>
+      <p>马甲自营破城、平台赋能第三方、海外出海，三线数据汇聚同一 AI 大脑持续压低运营成本。</p>
+
+      <div class="callout">
+        <span class="label">商业模式路径（伏笔，避免后续存疑）</span>
+        <p>以分润为主轴，车辆与硬件绑定采取<strong>软件先行、硬件后置</strong>的路径：先用软件服务接住客户、沉淀数据、建立运营依赖，再在客户换车周期中逐步导入自有车辆与中控。</p>
+      </div>
+
+      <div class="callout lead">
+        <span class="label">产品北极星</span>
+        <p>把新开一个运营单元的成本、周期和人力降到最低。</p>
+      </div>
+      <p style="font-size:13.5px;color:var(--ink-2)">运营单元指城市、品牌、运营主体的一个组合。例如一个新马甲品牌在一个新城市上线，或一个新运营商完成迁移并稳定运行。</p>
+
+      <table>
+        <thead><tr><th>三年方向性数字</th><th>目标</th></tr></thead>
+        <tbody>
+          <tr><td>运营单元启动成本</td><td class="num">降低约 70%</td></tr>
+          <tr><td>上线周期</td><td class="num">收敛到 15 天以内，进一步走向 7 天</td></tr>
+          <tr><td>单城市稳态人力</td><td class="num">降低约 50%</td></tr>
+        </tbody>
+      </table>
+
+      <div class="notes">
+        <b>待补</b>：三个北极星指标的现状基线。上线周期已知为 30 天以上，启动成本与稳态人力需估算。
+      </div>
+    </div>
+    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">02</span></div>
+  </section>
+
+  <!-- ============ 3 桥梁 ============ -->
+  <section class="slide">
+    <div class="kicker">Page 03 · 推导桥梁</div>
+    <h1>从三年目标，如何推到明年的迁移战役</h1>
+    <p class="subtitle">这一页回答：迁移 10 万辆车，和三螺旋飞轮到底是什么关系。</p>
+    <div class="body">
+      <ol class="chain">
+        <li>三年靠“低成本快速复制”取胜</li>
+        <li>但复制能力今天并不具备</li>
+        <li>开城 30+ 天 · 培训靠单人 · 对账靠人工 · 协议靠定制</li>
+        <li>明年有 40-50 个全新运营商、8-10 万辆的迁移压力测试</li>
+        <li class="end">明年战役 = 用迁移倒逼复制能力成型</li>
+      </ol>
+
+      <div class="callout lead">
+        <span class="label">关键表述</span>
+        <p>迁移不是目的，是让平台复制能力从 19 个运营主体走向 60-70 个的压力测试。做完这一仗，三年飞轮的地基就有了。</p>
+      </div>
+
+      <h2 class="sec">顺带消解三个疑问</h2>
+      <div class="grid g3">
+        <div class="card">
+          <span class="t">为什么智能运营层往后放</span>
+          <span class="d">先解决接得住、开得快，再解决运营得精细。承载能力没建好就做精细化策略，等于在流沙上盖楼。且迁移客户多数本身就是差土壤城市运营商，服务好他们就是在验证价值主张。</span>
+        </div>
+        <div class="card">
+          <span class="t">为什么从能力补齐转向规模化承接</span>
+          <span class="d">方向没有否定，改变的是补齐方式。年初是从平台视角对标出产品能力与优先级，明年是对着迁移客户的实际使用清单做定向对齐，每补一个功能都有明确的迁移收益。</span>
+        </div>
+        <div class="card">
+          <span class="t">为什么三年讲卖车、明年却用三方车</span>
+          <span class="d">这是软件先行、硬件后置路径的第一步。由此衍生一项明确的产品需求：混合车队管理能力。</span>
+        </div>
+      </div>
+
+      <div class="notes">
+        <b>讲法</b>：全场最重要的一页。这页讲通了，后面的资源和取舍都好谈；讲不通，会一路被质疑“这是不是临时任务”。
+      </div>
+    </div>
+    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">03</span></div>
+  </section>
+
+  <!-- ============ 4 现状 ============ -->
+  <section class="slide">
+    <div class="kicker">Page 04 · 现状与差距</div>
+    <h1>现状不是用来罗列的，是用来逼出结论的</h1>
+    <p class="subtitle">用事实建立共识，让后面的策略显得是被推导出来的。</p>
+    <div class="body">
+      <div class="grid g3">
+        <div class="card stat"><div class="v">7</div><div class="k">自营马甲品牌</div></div>
+        <div class="card stat"><div class="v">12</div><div class="k">第三方运营商</div></div>
+        <div class="card stat"><div class="v">19</div><div class="k">运营主体合计</div></div>
+      </div>
+
+      <h2 class="sec">已有能力与四层现状</h2>
+      <table>
+        <thead><tr><th style="width:22%">能力层</th><th>现状</th></tr></thead>
+        <tbody>
+          <tr><td><strong>设备层</strong></td><td>外部车辆与中控兼容、G 端政策所需硬件协议适配，仍以逐个适配为主</td></tr>
+          <tr><td><strong>模块化 SaaS 功能层</strong></td><td>C/B/资产/G 端基础能力齐备，已支持多品牌多主体，但商户特殊诉求收敛不足</td></tr>
+          <tr><td><strong>智能运营层</strong></td><td>仅基础运营能力，C 端营销、B 端风控、调度等精细化策略缺失</td></tr>
+          <tr><td><strong>生态链接层</strong></td><td>缺失，依赖青桔主业的供应链、电池、电柜</td></tr>
+        </tbody>
+      </table>
+
+      <h2 class="sec">开城 30 天以上的三个瓶颈，以及两个明确缺口</h2>
+      <div class="grid g2">
+        <div class="card"><span class="t">三个瓶颈</span><span class="d">小程序与三方支付准入 2 周以上，且靠微信群推进；外部中控与智能硬件兼容需额外开发；产品培训由产品负责人逐个完成。</span></div>
+        <div class="card"><span class="t">两个缺口</span><span class="d">账号与功能权限体系缺少线上化配置；分账虽有自动与手动两种方式，但出账与对账未线上化。</span></div>
+      </div>
+
+      <div class="callout risk">
+        <span class="label">可行性校验 · 本页结论</span>
+        <p>现状是 19 个主体、开城 30 天以上、培训靠一个人、对账靠人工。明年要接 40-50 个全新运营商。<strong>仅培训一项，按每商 2 天计算就是 100 人天</strong>，尚不含日常答疑与现有主体的支撑；叠加准入 2 周以上、协议逐个适配——这个目标在当前模式下不是效率问题，而是<strong>物理上无法完成</strong>。</p>
+        <p style="margin-top:8px">由此自然导出：<strong>开城产品化不是优化项，是可行性前提。</strong></p>
+      </div>
+
+      <div class="notes">
+        <b>讲法</b>：这段是全场最有力的论据，务必留时间讲透，并在此处自然过渡到第 5 页。
+      </div>
+    </div>
+    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">04</span></div>
+  </section>
+
+  <!-- ============ 5 战役是什么 ============ -->
+  <section class="slide">
+    <div class="kicker">Page 05 · 明年战役</div>
+    <h1>这一仗是什么：40-50 个全新运营商，8-10 万辆车</h1>
+    <p class="subtitle">先讲清楚规模、客户画像与商业模式，再讲难点。</p>
+    <div class="body">
+      <table>
+        <thead><tr><th style="width:26%">维度</th><th>内容</th></tr></thead>
+        <tbody>
+          <tr><td><strong>战役定义</strong></td><td>承接 8-10 万辆存量车迁移，客户为<strong>全新运营商</strong>，非现有 12 家扩量</td></tr>
+          <tr><td><strong>规模换算</strong></td><td>按单商平均 2000 辆估算，新增 40-50 个运营商；主体总数 19 → 60-70，约为当前 3.5 倍；折算节奏为平均每周上线约 1 个商</td></tr>
+          <tr><td><strong>迁移后形态</strong></td><td>三方中控与车辆 + 我方软件服务。本批客户<strong>不涉及卖车</strong>，商业模式为纯软件服务与分润</td></tr>
+          <tr><td><strong>客户画像</strong></td><td>单商 2000 辆属中小体量，付费能力有限，无法支撑定制开发。因此极致标准化与自助化是必要条件，不是可选项</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout lead">
+        <span class="label">一句话策略</span>
+        <p>明年以承接 8-10 万辆存量车迁移为核心战役，通过设备接入框架化、开城流程线上化、结算对账产品化、培训自助化，把新增运营单元周期压到 15 天以内；功能对齐只针对迁移客户实际在用的能力，不做泛化竞品对标。</p>
+      </div>
+
+      <div class="callout warn">
+        <span class="label">待补 · 业务收益测算框架</span>
+        <p>建议按以下口径向业务侧取数：</p>
+        <ul style="margin-bottom:0">
+          <li>年化分润收入 = 迁移车辆数 × 单车日均订单 × 单均收入 × 分润比例</li>
+          <li>软件服务费或平台使用费口径（本批客户不含卖车收入）</li>
+          <li>对主业的订单增量与份额贡献</li>
+          <li>若短期拿不到精确值，至少给出订单量级与相当于当前平台体量的倍数</li>
+        </ul>
+      </div>
+
+      <div class="notes">
+        <b>讲法</b>：收益数字目前只有定性判断。主动说明“正在与业务侧对齐口径”，比被问出来更好。
+      </div>
+    </div>
+    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">05</span></div>
+  </section>
+
+  <!-- ============ 6 为什么难 ============ -->
+  <section class="slide">
+    <div class="kicker">Page 06 · 难点分析</div>
+    <h1>这一仗为什么难：迁移和新开城不是一回事</h1>
+    <p class="subtitle">说明本质差异，为后续的能力投入与风险前置条件铺垫。</p>
+    <div class="body">
+      <div class="grid g2">
+        <div class="card"><span class="n">特殊性 01</span><span class="t">存量搬迁，不能断运营</span><span class="d">用户、押金、会员、订单、历史数据都要一起搬，迁移期间业务必须连续。</span></div>
+        <div class="card"><span class="n">特殊性 02</span><span class="t">设备兼容是可行性前提</span><span class="d">车辆与中控全部来自外部，协议种类可能高度分散，直接决定工期且不可控。</span></div>
+        <div class="card"><span class="n">特殊性 03</span><span class="t">客户有对比对象</span><span class="d">从其他平台迁来，功能落差会被立刻感知，容忍度低于新客户。</span></div>
+        <div class="card"><span class="n">特殊性 04</span><span class="t">无硬件绑定，切换成本低</span><span class="d">留存只能依赖软件能力、数据沉淀与运营依赖，结算准确性与日常工具可用性因此格外重要。</span></div>
+      </div>
+
+      <h2 class="sec">新开城与迁移承接的差异对照</h2>
+      <table>
+        <thead><tr><th style="width:34%">维度</th><th style="width:33%">新开城</th><th style="width:33%">迁移承接</th></tr></thead>
+        <tbody>
+          <tr><td>冷启动投放</td><td>有</td><td>无</td></tr>
+          <tr><td>准入流程</td><td>有</td><td>有</td></tr>
+          <tr><td>设备协议适配</td><td>部分</td><td><strong>全部，且为外部协议</strong></td></tr>
+          <tr><td>历史数据迁移</td><td>无</td><td><strong>有，最大风险来源</strong></td></tr>
+          <tr><td>业务连续性要求</td><td>低</td><td><strong>极高</strong></td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13.5px;color:var(--ink-2)">因此第 9 页的上线周期指标按两个口径分别衡量，避免团队执行时产生歧义。</p>
+
+      <div class="callout warn">
+        <span class="label">待补 · 优先级最高</span>
+        <p>待迁移客户车辆与中控的<strong>厂商集中度与协议收敛度</strong>。若可收敛至 10-15 种主流协议，协议库可覆盖大部分；若高度分散，须设兼容性准入门槛，不在白名单内的车辆不承诺迁移排期。</p>
+      </div>
+    </div>
+    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">06</span></div>
+  </section>
+
+  <!-- ============ 7 开城提效 ============ -->
+  <section class="slide">
+    <div class="kicker">Page 07 · 核心可交付</div>
+    <h1>开城提效三件事：北极星的实现路径</h1>
+    <p class="subtitle">这是明年产出的集中体现，直接对应第 2 页的产品北极星。</p>
+    <div class="body">
+      <table>
+        <thead>
+          <tr><th style="width:19%">瓶颈</th><th style="width:24%">现状</th><th style="width:38%">产品化解法</th><th style="width:19%">目标</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>小程序与三方支付准入</strong></td>
+            <td>2 周以上，靠微信群沟通，依赖商户配合与平台审核</td>
+            <td>准入流程线上化：材料清单、进度看板、状态提醒、自动催办；评估服务商或模板方案，减少审核轮次</td>
+            <td class="num">5 天以内</td>
+          </tr>
+          <tr>
+            <td><strong>中控与智能硬件兼容</strong></td>
+            <td>一车一控一适配，外部协议需定制开发</td>
+            <td>协议适配框架化、协议库沉淀、自助接入工具、兼容性白名单</td>
+            <td class="num">接入周期降约 60%</td>
+          </tr>
+          <tr>
+            <td><strong>产品培训</strong></td>
+            <td>由产品负责人逐个完成</td>
+            <td>自助学习中心、场景化操作引导、沙箱演练环境、分角色任务清单</td>
+            <td class="num">本人投入降 80%</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <span class="label">配套一项 · 商户协作线上化</span>
+        <p>19 个主体靠微信群还能撑住，<strong>60-70 个撑不住</strong>。需要统一的商户协作入口，承接需求、进度、问题与通知。</p>
+      </div>
+
+      <div class="grid g3">
+        <div class="card stat"><div class="v">14 → 5<small> 天</small></div><div class="k">准入周期</div></div>
+        <div class="card stat"><div class="v">-60<small>%</small></div><div class="k">协议接入周期</div></div>
+        <div class="card stat"><div class="v">-80<small>%</small></div><div class="k">培训人力投入</div></div>
+      </div>
+
+      <div class="notes">
+        <b>讲法</b>：这三件事合起来就是北极星指标的实现路径，讲的时候和第 9 页的指标一一对应。
+      </div>
+    </div>
+    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">07</span></div>
+  </section>
+
+  <!-- ============ 8 能力重点 ============ -->
+  <section class="slide">
+    <div class="kicker">Page 08 · 能力重点</div>
+    <h1>四层能力重点，加两个横向专项</h1>
+    <p class="subtitle">纵向沿用既有能力分层，横向专项单独列出，保持框架干净。</p>
+    <div class="body">
+      <h2 class="sec">纵向：四层能力重点</h2>
+      <table>
+        <thead><tr><th style="width:24%">能力层</th><th>明年重点</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>设备层</strong><span class="tag key">最高优先级</span></td>
+            <td>协议适配框架化、协议库沉淀、自助接入工具、兼容性白名单。本批客户车辆与中控全部外部，这一层做不好，后面所有软件能力无处落地。</td>
+          </tr>
+          <tr>
+            <td><strong>模块化 SaaS 功能层</strong></td>
+            <td>定向补齐迁移客户高频功能落差；商户特殊诉求收敛为配置项；账号与权限体系线上化，新主体开通做到分钟级自助；新增<strong>混合车队管理</strong>，支撑同一运营商同时存在三方车辆与我方车辆时的资产、运维、计费与数据统一管理。</td>
+          </tr>
+          <tr>
+            <td><strong>智能运营层</strong><span class="tag todo">不铺开</span></td>
+            <td>只做与迁移和降本强相关的 B 端风控、基础调度提效，以及保住迁移客户用户活跃所需的 C 端基础营销。</td>
+          </tr>
+          <tr>
+            <td><strong>生态链接层</strong></td>
+            <td>继续依托青桔的供应链、电池、电柜能力，但把对接接口标准化抽象，避免深度耦合导致第三方与海外场景无法复用。</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 class="sec">横向：两个专项</h2>
+      <div class="grid g2">
+        <div class="card">
+          <span class="n">专项 一</span>
+          <span class="t">迁移工程能力（建议独立立项）</span>
+          <span class="d">迁移可行性评估工具、数据映射与校验、双系统并行比对、分批灰度切换、回滚预案。最容易被低估，但直接决定成败。</span>
+        </div>
+        <div class="card">
+          <span class="n">专项 二</span>
+          <span class="t">商务承接支撑（因客户为全新签约）</span>
+          <span class="d">兼容性前置评估工具，让商务签约前即可判断能否接入与大致工期；标准化售前材料与分润、服务范围报价配置；迁移可行性评估，覆盖数据量、历史数据范围与切换窗口。</span>
+        </div>
+      </div>
+
+      <div class="callout">
+        <span class="label">海外</span>
+        <p>今年只做架构不阻塞：多语言、多币种、多时区、支付接口抽象，加一个试点国家，不做全面本地化。</p>
+      </div>
+    </div>
+    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">08</span></div>
+  </section>
+
+  <!-- ============ 9 指标 ============ -->
+  <section class="slide">
+    <div class="kicker">Page 09 · 指标</div>
+    <h1>明年指标，是三年北极星的第一年落点</h1>
+    <p class="subtitle">所有指标按“现状 → 明年 → 三年”呈现，连成一条线。</p>
+    <div class="body">
+      <div class="callout">
+        <span class="label">上线周期分两个口径，避免歧义</span>
+        <p>新开城与迁移承接的工作量结构不同，必须分别衡量。</p>
+      </div>
+
+      <table>
+        <thead><tr><th style="width:34%">指标</th><th style="width:22%">现状</th><th style="width:22%">明年</th><th style="width:22%">三年</th></tr></thead>
+        <tbody>
+          <tr><td><strong>新开城周期</strong></td><td>30 天以上</td><td class="num">15 天</td><td>7 天</td></tr>
+          <tr><td><strong>迁移承接周期</strong></td><td>待补基线</td><td class="num">明年目标（含双跑校验与切换窗口）</td><td>待定</td></tr>
+          <tr><td>小程序与支付准入周期</td><td>14 天以上</td><td class="num">5 天</td><td>3 天</td></tr>
+          <tr><td>新中控协议接入周期</td><td>待补基线</td><td class="num">下降约 60%</td><td>配置化接入</td></tr>
+          <tr><td>培训环节本人投入时长</td><td>待补基线</td><td class="num">下降 80%</td><td>完全自助</td></tr>
+          <tr><td>运营主体数量</td><td>19</td><td class="num">60-70</td><td>待定</td></tr>
+          <tr><td>并行上线能力</td><td>待补基线</td><td class="num">平均每周约 1 个商</td><td>待定</td></tr>
+          <tr><td>出账对账线上化率</td><td>接近 0</td><td class="num">100%</td><td>含对账差错率上限</td></tr>
+          <tr><td>定制工时占比与标准化率</td><td>待补基线</td><td class="num">明年目标</td><td>80% 标准化</td></tr>
+        </tbody>
+      </table>
+
+      <div class="grid g2">
+        <div class="card"><span class="t">迁移专项指标</span><span class="d">迁移车辆数、迁移成功率、迁移期间事故数与资金差错数。</span></div>
+        <div class="card"><span class="t">分账为必须完成项</span><span class="d">本批客户无硬件绑定、切换成本低，一旦对不上账，信任会立刻崩塌。</span></div>
+      </div>
+    </div>
+    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">09</span></div>
+  </section>
+
+  <!-- ============ 10 取舍 ============ -->
+  <section class="slide">
+    <div class="kicker">Page 10 · 取舍</div>
+    <h1>明确不做什么，以及需求怎么收敛</h1>
+    <p class="subtitle">有取舍的策略才是策略。这一页体现判断力。</p>
+    <div class="body">
+      <h2 class="sec">明确不做</h2>
+      <div class="grid g3">
+        <div class="card"><span class="d">泛化的竞品功能对标</span></div>
+        <div class="card"><span class="d">单客户深度定制</span></div>
+        <div class="card"><span class="d">复杂 AI 调度与精细化运营策略（推迟到统一数据底座完成之后）</span></div>
+        <div class="card"><span class="d">自建生态链路</span></div>
+        <div class="card"><span class="d">海外全面本地化</span></div>
+        <div class="card"><span class="d">超出白名单的车辆兼容承诺</span></div>
+      </div>
+
+      <h2 class="sec">需求收敛规则（建议现场获得认可）</h2>
+      <table>
+        <thead><tr><th style="width:38%">需求来源</th><th>处理方式</th></tr></thead>
+        <tbody>
+          <tr><td><strong>3 个以上客户提出</strong></td><td>做成标准功能</td></tr>
+          <tr><td><strong>1 至 2 个客户提出</strong></td><td>做成配置项，或不做</td></tr>
+          <tr><td><strong>单客户定制</strong></td><td>原则上不接；确需接的必须明确复用路径</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <span class="label">为什么这条规则是商业问题，不只是研发效率问题</span>
+        <p>本批客户单体 2000 辆、付费能力有限，<strong>定制成本会直接吃掉分润收入</strong>。收敛规则因此是商业可行性的一部分。</p>
+      </div>
+
+      <h2 class="sec">三年能力节奏（回答“AI 壁垒是否来得及”）</h2>
+      <div class="grid g3">
+        <div class="card"><span class="n">第一年</span><span class="t">统一数据底座</span><span class="d">统一数据模型与埋点规范，让三线数据可汇聚、可比较。</span></div>
+        <div class="card"><span class="n">第二年</span><span class="t">算法与精细化运营</span><span class="d">调度、投放、风控、营销策略能力成型。</span></div>
+        <div class="card"><span class="n">第三年</span><span class="t">形成壁垒</span><span class="d">数据沉淀与调度算法构成不可复制的竞争优势。</span></div>
+      </div>
+    </div>
+    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">10</span></div>
+  </section>
+
+  <!-- ============ 11 资源风险决策 ============ -->
+  <section class="slide">
+    <div class="kicker">Page 11 · 资源 · 风险 · 决策</div>
+    <h1>需要的资源、要防的风险、请您拍板的三件事</h1>
+    <p class="subtitle">目的是推动决策，而不是止于汇报。</p>
+    <div class="body">
+      <h2 class="sec">方案对照：不投产品资源、靠加人能不能扛</h2>
+      <table>
+        <thead><tr><th style="width:20%">方案</th><th style="width:38%">所需投入</th><th style="width:42%">风险</th></tr></thead>
+        <tbody>
+          <tr><td><strong>靠人力扛</strong></td><td>培训、准入、对账、协议适配全部人工，需增加编制<span class="tag todo">待测算</span></td><td>质量不可控、单点依赖、能力不沉淀、第二年重复投入</td></tr>
+          <tr><td><strong>产品化</strong></td><td>前置研发投入<span class="tag todo">待补</span></td><td>见效有滞后，需接受前期数月产出不明显</td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:13.5px;color:var(--ink-2)">主动承认产品化的代价，比只讲好处更容易获得信任。</p>
+
+      <h2 class="sec">主要风险与应对</h2>
+      <div class="callout risk">
+        <span class="label">最大风险 · 节奏错配</span>
+        <p>设备兼容与迁移工具尚未就绪，商务已对外承诺迁移排期。应对：<strong>迁移排期与设备兼容能力就绪时间挂钩，按批次锁定，不做全量一次性承诺。</strong></p>
+      </div>
+      <ul>
+        <li><strong>协议分散风险</strong>：外部车辆与中控若厂商高度分散，设备层工作量不可控，须以兼容性白名单作为承诺前提</li>
+        <li><strong>迁移事故</strong>：运营中断或数据错误将造成资金与口碑双重损失</li>
+        <li><strong>人力单点</strong>：本人加微信群的模式在 60-70 个主体规模下必然失效</li>
+        <li><strong>粘性偏弱</strong>：无硬件绑定，留存高度依赖结算准确性与日常运营工具可用性</li>
+        <li><strong>标准化被冲击</strong>：迁移客户的个性化需求需靠收敛规则约束</li>
+        <li><strong>边界与合规</strong>：自营与第三方需明确城市不重叠、数据隔离规则；马甲品牌需实质性隔离，建议法务前置评估，并把可审计的隔离能力写入产品需求</li>
+      </ul>
+
+      <h2 class="sec">需要 Leader 决策的三件事</h2>
+      <div class="grid g3">
+        <div class="card"><span class="n">决策 01</span><span class="t">兼容性白名单</span><span class="d">是否作为对外承诺前提，即不在白名单内的车辆不承诺迁移排期。这条直接约束商务签约。</span></div>
+        <div class="card"><span class="n">决策 02</span><span class="t">软件先行、硬件后置</span><span class="d">是否认可这一路径，它改变了三年商业模式中车辆绑定的实现方式。</span></div>
+        <div class="card"><span class="n">决策 03</span><span class="t">资源与收敛规则</span><span class="d">迁移工程与培训自助化是否单独配资源，以及是否接受需求收敛规则。</span></div>
+      </div>
+    </div>
+    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">11</span></div>
+  </section>
+
+  <!-- ============ 附录 ============ -->
+  <section class="slide">
+    <div class="kicker">附录 · 汇报前待补清单</div>
+    <h1>汇报前还需要补齐的八项数据</h1>
+    <p class="subtitle">按优先级排序。第 1 项不落地，风险等级、接入周期目标与白名单决策都缺依据。</p>
+    <div class="body">
+      <table>
+        <thead><tr><th style="width:6%">#</th><th style="width:36%">待补项</th><th>用途与说明</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td><strong>车辆与中控厂商集中度、协议收敛度</strong></td><td>优先级最高。直接决定设备层工作量与风险等级，也决定能否给出确定的迁移排期承诺</td></tr>
+          <tr><td class="num">2</td><td>迁移业务收益量级</td><td>按第 5 页测算框架向业务侧取数，支撑“核心战役”的分量</td></tr>
+          <tr><td class="num">3</td><td>商务签约节奏</td><td>40-50 个客户能否按批次锁定时间分布</td></tr>
+          <tr><td class="num">4</td><td>迁移承接周期现状基线</td><td>与新开城周期分开统计，对应第 9 页两个口径</td></tr>
+          <tr><td class="num">5</td><td>三个北极星指标基线</td><td>单城市启动成本、稳态运营人力、新协议接入周期</td></tr>
+          <tr><td class="num">6</td><td>资源规模与人力对照</td><td>明年可投入的产研资源，以及靠人力扛所需的编制测算</td></tr>
+          <tr><td class="num">7</td><td>迁移客户高频功能清单</td><td>用于定向对齐而非泛化对标</td></tr>
+          <tr><td class="num">8</td><td>定制工时占比与标准化率</td><td>当前基线，支撑第 9 页指标</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout">
+        <span class="label">汇报节奏建议</span>
+        <p>完整版按 11 页讲。时间压缩到 15 分钟时，只讲<strong>第 1、3、5、7、11 页</strong>——结论、桥梁、战役、开城三件事、决策，主张依然完整。</p>
+      </div>
+    </div>
+    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">附录</span></div>
+  </section>
+
+</div>
+
+<div id="hud">
+  <button id="prev" title="上一页">‹</button>
+  <span class="idx" id="idx">1 / 13</span>
+  <button id="next" title="下一页">›</button>
+  <span class="sep"></span>
+  <button class="toggle" id="tDoc" title="长文模式 D">长文</button>
+  <button class="toggle" id="tNotes" title="讲者备注 N">备注</button>
+  <button class="toggle" id="tPrint" title="打印 / 导出 PDF">PDF</button>
+</div>
+
+<div id="help">
+  <kbd>←</kbd> <kbd>→</kbd> 翻页 · <kbd>D</kbd> 长文 · <kbd>N</kbd> 备注 · <kbd>P</kbd> 打印
+</div>
+
+<script>
+(function () {
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var total = slides.length;
+  var cur = 0;
+
+  var idxEl = document.getElementById('idx');
+  var barEl = document.getElementById('progress');
+
+  function render() {
+    slides.forEach(function (s, i) { s.classList.toggle('active', i === cur); });
+    idxEl.textContent = (cur + 1) + ' / ' + total;
+    barEl.style.width = ((cur + 1) / total * 100) + '%';
+    if (!document.body.classList.contains('doc')) window.scrollTo(0, 0);
+  }
+
+  function go(n) {
+    cur = Math.max(0, Math.min(total - 1, n));
+    if (document.body.classList.contains('doc')) {
+      slides[cur].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      idxEl.textContent = (cur + 1) + ' / ' + total;
+      barEl.style.width = ((cur + 1) / total * 100) + '%';
+    } else {
+      render();
+    }
+  }
+
+  document.getElementById('prev').onclick = function () { go(cur - 1); };
+  document.getElementById('next').onclick = function () { go(cur + 1); };
+
+  function toggleDoc() {
+    var on = document.body.classList.toggle('doc');
+    document.getElementById('tDoc').classList.toggle('on', on);
+    if (!on) render();
+  }
+  function toggleNotes() {
+    var on = document.body.classList.toggle('notes-on');
+    document.getElementById('tNotes').classList.toggle('on', on);
+  }
+
+  document.getElementById('tDoc').onclick = toggleDoc;
+  document.getElementById('tNotes').onclick = toggleNotes;
+  document.getElementById('tPrint').onclick = function () { window.print(); };
+
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var k = e.key;
+    if (k === 'ArrowRight' || k === 'PageDown' || k === ' ') { e.preventDefault(); go(cur + 1); }
+    else if (k === 'ArrowLeft' || k === 'PageUp') { e.preventDefault(); go(cur - 1); }
+    else if (k === 'Home') { e.preventDefault(); go(0); }
+    else if (k === 'End') { e.preventDefault(); go(total - 1); }
+    else if (k === 'd' || k === 'D') { toggleDoc(); }
+    else if (k === 'n' || k === 'N') { toggleNotes(); }
+    else if (k === 'p' || k === 'P') { window.print(); }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
