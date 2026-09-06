@@ -318,7 +318,7 @@
       <div><div class="k">关键指标</div><div class="v">上线周期 30+ 天 → 15 天</div></div>
     </div>
     <div class="notes">
-      <b>讲法</b>：封面停留 10 秒，直接进结论页。全篇骨架为第 1、3、5、7、11 页，
+      <b>讲法</b>：封面停留 10 秒，直接进结论页。全篇骨架为第 1、3、5、7、12 页，
       时间被压缩到 15 分钟时只讲这五页也能成立。
     </div>
   </section>
@@ -566,7 +566,7 @@
           <tr><td>业务连续性要求</td><td>低</td><td><strong>极高</strong></td></tr>
         </tbody>
       </table>
-      <p style="font-size:13.5px;color:var(--ink-2)">因此第 9 页的上线周期指标按两个口径分别衡量，避免团队执行时产生歧义。</p>
+      <p style="font-size:13.5px;color:var(--ink-2)">因此第 10 页的上线周期指标按两个口径分别衡量，避免团队执行时产生歧义。</p>
 
       <div class="callout warn">
         <span class="label">待补 · 优先级最高</span>
@@ -620,15 +620,76 @@
       </div>
 
       <div class="notes">
-        <b>讲法</b>：这三件事合起来就是北极星指标的实现路径，讲的时候和第 9 页的指标一一对应。
+        <b>讲法</b>：这三件事合起来就是北极星指标的实现路径，讲的时候和第 10 页的指标一一对应。
       </div>
     </div>
     <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">07</span></div>
   </section>
 
-  <!-- ============ 8 能力重点 ============ -->
+  <!-- ============ 8 高优能力识别 ============ -->
   <section class="slide">
-    <div class="kicker">Page 08 · 能力重点</div>
+    <div class="kicker">Page 08 · 高优能力识别</div>
+    <h1>软件侧高优能力怎么定：两个来源，三档优先级</h1>
+    <p class="subtitle">设备兼容之外，软件能力的落差同样决定迁移成败。识别方式必须先分清需求性质。</p>
+    <div class="body">
+      <h2 class="sec">两个来源，性质完全不同</h2>
+      <table>
+        <thead><tr><th style="width:22%">维度</th><th style="width:39%">G 端诉求</th><th style="width:39%">来源商调研</th></tr></thead>
+        <tbody>
+          <tr><td>需求性质</td><td><strong>合规准入，一票否决</strong></td><td>运营连续性</td></tr>
+          <tr><td>变化维度</td><td>按<strong>城市</strong>差异</td><td>按<strong>客户</strong>差异</td></tr>
+          <tr><td>不满足的后果</td><td>无法合法运营，迁移直接失败</td><td>效率下降，客户强烈感知</td></tr>
+          <tr><td>收敛方式</td><td>监管接口库 + 配置化</td><td>按覆盖客户数排序</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <span class="label">关键区分</span>
+        <p>G 端要求不进需求池排优先级。它与设备兼容白名单同级，是<strong>迁移排期的前置条件</strong>——某城市的监管报送接口不具备，该商就不能迁，与功能好用与否无关。</p>
+      </div>
+
+      <h2 class="sec">三档优先级：阻断程度 × 覆盖客户或城市数 × 实现成本</h2>
+      <div class="grid g3">
+        <div class="card">
+          <span class="n">P0 · 阻断型</span>
+          <span class="t">不具备则无法迁移或无法合法运营</span>
+          <span class="d">G 端监管数据报送接口、电子围栏与禁停区、车辆备案与投放配额、计费与分账规则、用户资产（押金 / 会员 / 余额）迁移。</span>
+        </div>
+        <div class="card">
+          <span class="n">P1 · 连续性型</span>
+          <span class="t">缺失导致效率大幅下降且客户强感知</span>
+          <span class="d">运维派单与故障处理、批量操作、报表与对账、车辆调度基础能力、头盔佩戴与载重检测的业务侧联动。</span>
+        </div>
+        <div class="card">
+          <span class="n">P2 · 体验型</span>
+          <span class="t">可延后或有替代方案</span>
+          <span class="d">营销玩法、精细化运营策略、个性化看板。明年不做。</span>
+        </div>
+      </div>
+      <p style="font-size:13.5px;color:var(--ink-2)"><strong>判定原则：P0 决定能不能迁，P1 决定迁得好不好，P2 明年不做。</strong></p>
+
+      <h2 class="sec">调研方式：40-50 个商不能逐个深访</h2>
+      <div class="grid g3">
+        <div class="card"><span class="n">方式 01</span><span class="t">功能对照清单嵌入准入流程</span><span class="d">基于原平台功能地图做成勾选表，签约时同步收集使用频次与阻断度。调研由一次性动作变为流程的副产品。</span></div>
+        <div class="card"><span class="n">方式 02</span><span class="t">取样深访 5-8 家</span><span class="d">覆盖不同城市层级、车队规模、原平台来源，用于校准清单准确性。</span></div>
+        <div class="card"><span class="n">方式 03</span><span class="t">G 端按城市建矩阵</span><span class="d">不依赖商户口述，直接取各城市监管平台接口规范，形成城市 × 报送项 × 接口标准 × 适配状态对照。</span></div>
+      </div>
+
+      <div class="callout risk">
+        <span class="label">风险预警 · 标准化的最大威胁</span>
+        <p>40-50 个商分布在数十个城市，各城市监管报送标准可能各不相同。<strong>若逐城定制，业务会直接退回项目制，80% 标准化的目标随之落空。</strong>化解办法只有一条：监管适配做成接口库加配置化，新城市走配置而非开发。</p>
+      </div>
+
+      <div class="notes">
+        <b>产出物</b>：功能落差矩阵（客户 × 功能 × 频次 × 阻断度）与城市监管要求库（相当于设备层协议库的软件版，一次适配、多城复用）。
+        <b>讲法</b>：这一页是第 9 页模块化 SaaS 功能层重点的来源依据，讲的时候顺势带入。
+      </div>
+    </div>
+    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">08</span></div>
+  </section>
+
+  <!-- ============ 9 能力重点 ============ -->
+  <section class="slide">
+    <div class="kicker">Page 09 · 能力重点</div>
     <h1>四层能力重点，加两个横向专项</h1>
     <p class="subtitle">纵向沿用既有能力分层，横向专项单独列出，保持框架干净。</p>
     <div class="body">
@@ -642,7 +703,7 @@
           </tr>
           <tr>
             <td><strong>模块化 SaaS 功能层</strong></td>
-            <td>定向补齐迁移客户高频功能落差；商户特殊诉求收敛为配置项；账号与权限体系线上化，新主体开通做到分钟级自助；新增<strong>混合车队管理</strong>，支撑同一运营商同时存在三方车辆与我方车辆时的资产、运维、计费与数据统一管理。</td>
+            <td>按第 8 页 P0 / P1 分档定向补齐；<strong>G 端监管接口库与配置化适配</strong>，新城市走配置而非开发；商户特殊诉求收敛为配置项；账号与权限体系线上化，新主体开通做到分钟级自助；新增<strong>混合车队管理</strong>，支撑同一运营商同时存在三方车辆与我方车辆时的资产、运维、计费与数据统一管理。</td>
           </tr>
           <tr>
             <td><strong>智能运营层</strong><span class="tag todo">不铺开</span></td>
@@ -674,12 +735,12 @@
         <p>今年只做架构不阻塞：多语言、多币种、多时区、支付接口抽象，加一个试点国家，不做全面本地化。</p>
       </div>
     </div>
-    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">08</span></div>
+    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">09</span></div>
   </section>
 
-  <!-- ============ 9 指标 ============ -->
+  <!-- ============ 10 指标 ============ -->
   <section class="slide">
-    <div class="kicker">Page 09 · 指标</div>
+    <div class="kicker">Page 10 · 指标</div>
     <h1>明年指标，是三年北极星的第一年落点</h1>
     <p class="subtitle">所有指标按“现状 → 明年 → 三年”呈现，连成一条线。</p>
     <div class="body">
@@ -707,13 +768,18 @@
         <div class="card"><span class="t">迁移专项指标</span><span class="d">迁移车辆数、迁移成功率、迁移期间事故数与资金差错数。</span></div>
         <div class="card"><span class="t">分账为必须完成项</span><span class="d">本批客户无硬件绑定、切换成本低，一旦对不上账，信任会立刻崩塌。</span></div>
       </div>
+
+      <div class="callout">
+        <span class="label">补充两项与高优能力识别对应的指标</span>
+        <p>P0 能力就绪率（按客户与城市统计，作为迁移排期的放行条件）；G 端监管接口配置化覆盖率（新城市接入无需开发的比例）。</p>
+      </div>
     </div>
-    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">09</span></div>
+    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">10</span></div>
   </section>
 
-  <!-- ============ 10 取舍 ============ -->
+  <!-- ============ 11 取舍 ============ -->
   <section class="slide">
-    <div class="kicker">Page 10 · 取舍</div>
+    <div class="kicker">Page 11 · 取舍</div>
     <h1>明确不做什么，以及需求怎么收敛</h1>
     <p class="subtitle">有取舍的策略才是策略。这一页体现判断力。</p>
     <div class="body">
@@ -749,12 +815,12 @@
         <div class="card"><span class="n">第三年</span><span class="t">形成壁垒</span><span class="d">数据沉淀与调度算法构成不可复制的竞争优势。</span></div>
       </div>
     </div>
-    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">10</span></div>
+    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">11</span></div>
   </section>
 
-  <!-- ============ 11 资源风险决策 ============ -->
+  <!-- ============ 12 资源风险决策 ============ -->
   <section class="slide">
-    <div class="kicker">Page 11 · 资源 · 风险 · 决策</div>
+    <div class="kicker">Page 12 · 资源 · 风险 · 决策</div>
     <h1>需要的资源、要防的风险、请您拍板的三件事</h1>
     <p class="subtitle">目的是推动决策，而不是止于汇报。</p>
     <div class="body">
@@ -775,6 +841,7 @@
       </div>
       <ul>
         <li><strong>协议分散风险</strong>：外部车辆与中控若厂商高度分散，设备层工作量不可控，须以兼容性白名单作为承诺前提</li>
+        <li><strong>城市监管差异风险</strong>：数十个城市的 G 端报送标准各不相同，若逐城定制将退回项目制，必须以监管接口库加配置化化解</li>
         <li><strong>迁移事故</strong>：运营中断或数据错误将造成资金与口碑双重损失</li>
         <li><strong>人力单点</strong>：本人加微信群的模式在 60-70 个主体规模下必然失效</li>
         <li><strong>粘性偏弱</strong>：无硬件绑定，留存高度依赖结算准确性与日常运营工具可用性</li>
@@ -784,37 +851,38 @@
 
       <h2 class="sec">需要 Leader 决策的三件事</h2>
       <div class="grid g3">
-        <div class="card"><span class="n">决策 01</span><span class="t">兼容性白名单</span><span class="d">是否作为对外承诺前提，即不在白名单内的车辆不承诺迁移排期。这条直接约束商务签约。</span></div>
+        <div class="card"><span class="n">决策 01</span><span class="t">迁移放行条件</span><span class="d">是否以设备兼容性白名单与 P0 能力（含该城市 G 端监管接口）就绪作为对外承诺前提，即两者未就绪不承诺迁移排期。这条直接约束商务签约。</span></div>
         <div class="card"><span class="n">决策 02</span><span class="t">软件先行、硬件后置</span><span class="d">是否认可这一路径，它改变了三年商业模式中车辆绑定的实现方式。</span></div>
         <div class="card"><span class="n">决策 03</span><span class="t">资源与收敛规则</span><span class="d">迁移工程与培训自助化是否单独配资源，以及是否接受需求收敛规则。</span></div>
       </div>
     </div>
-    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">11</span></div>
+    <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">12</span></div>
   </section>
 
   <!-- ============ 附录 ============ -->
   <section class="slide">
     <div class="kicker">附录 · 汇报前待补清单</div>
-    <h1>汇报前还需要补齐的八项数据</h1>
-    <p class="subtitle">按优先级排序。第 1 项不落地，风险等级、接入周期目标与白名单决策都缺依据。</p>
+    <h1>汇报前还需要补齐的九项数据</h1>
+    <p class="subtitle">按优先级排序。前两项不落地，风险等级、接入周期目标与放行条件决策都缺依据。</p>
     <div class="body">
       <table>
         <thead><tr><th style="width:6%">#</th><th style="width:36%">待补项</th><th>用途与说明</th></tr></thead>
         <tbody>
           <tr><td class="num">1</td><td><strong>车辆与中控厂商集中度、协议收敛度</strong></td><td>优先级最高。直接决定设备层工作量与风险等级，也决定能否给出确定的迁移排期承诺</td></tr>
-          <tr><td class="num">2</td><td>迁移业务收益量级</td><td>按第 5 页测算框架向业务侧取数，支撑“核心战役”的分量</td></tr>
-          <tr><td class="num">3</td><td>商务签约节奏</td><td>40-50 个客户能否按批次锁定时间分布</td></tr>
-          <tr><td class="num">4</td><td>迁移承接周期现状基线</td><td>与新开城周期分开统计，对应第 9 页两个口径</td></tr>
-          <tr><td class="num">5</td><td>三个北极星指标基线</td><td>单城市启动成本、稳态运营人力、新协议接入周期</td></tr>
-          <tr><td class="num">6</td><td>资源规模与人力对照</td><td>明年可投入的产研资源，以及靠人力扛所需的编制测算</td></tr>
-          <tr><td class="num">7</td><td>迁移客户高频功能清单</td><td>用于定向对齐而非泛化对标</td></tr>
-          <tr><td class="num">8</td><td>定制工时占比与标准化率</td><td>当前基线，支撑第 9 页指标</td></tr>
+          <tr><td class="num">2</td><td><strong>城市监管要求矩阵（G 端）</strong></td><td>覆盖客户所在城市的报送项、接口标准与适配状态。属 P0 阻断型，决定该城市客户能否合法运营</td></tr>
+          <tr><td class="num">3</td><td>功能落差矩阵（来源商）</td><td>客户 × 功能 × 使用频次 × 阻断度，用于 P0 / P1 分档与定向对齐</td></tr>
+          <tr><td class="num">4</td><td>迁移业务收益量级</td><td>按第 5 页测算框架向业务侧取数，支撑“核心战役”的分量</td></tr>
+          <tr><td class="num">5</td><td>商务签约节奏</td><td>40-50 个客户能否按批次锁定时间分布</td></tr>
+          <tr><td class="num">6</td><td>迁移承接周期现状基线</td><td>与新开城周期分开统计，对应第 10 页两个口径</td></tr>
+          <tr><td class="num">7</td><td>三个北极星指标基线</td><td>单城市启动成本、稳态运营人力、新协议接入周期</td></tr>
+          <tr><td class="num">8</td><td>资源规模与人力对照</td><td>明年可投入的产研资源，以及靠人力扛所需的编制测算</td></tr>
+          <tr><td class="num">9</td><td>定制工时占比与标准化率</td><td>当前基线，支撑第 10 页指标</td></tr>
         </tbody>
       </table>
 
       <div class="callout">
         <span class="label">汇报节奏建议</span>
-        <p>完整版按 11 页讲。时间压缩到 15 分钟时，只讲<strong>第 1、3、5、7、11 页</strong>——结论、桥梁、战役、开城三件事、决策，主张依然完整。</p>
+        <p>完整版按 12 页讲。时间压缩到 15 分钟时，只讲<strong>第 1、3、5、7、12 页</strong>——结论、桥梁、战役、开城三件事、决策，主张依然完整。</p>
       </div>
     </div>
     <div class="foot"><span>共享两轮 SaaS 年度产品策略</span><span class="pg">附录</span></div>
@@ -824,7 +892,7 @@
 
 <div id="hud">
   <button id="prev" title="上一页">‹</button>
-  <span class="idx" id="idx">1 / 13</span>
+  <span class="idx" id="idx">1 / 14</span>
   <button id="next" title="下一页">›</button>
   <span class="sep"></span>
   <button class="toggle" id="tDoc" title="长文模式 D">长文</button>
