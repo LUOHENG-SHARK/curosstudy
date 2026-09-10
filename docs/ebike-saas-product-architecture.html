@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>共享两轮 SaaS 产品架构全景</title>
+<style>
+  :root {
+    --ink: #14202b;
+    --ink-2: #3d4f5f;
+    --muted: #6b7c8c;
+    --line: #e3e8ee;
+    --line-2: #f0f3f6;
+    --bg: #eef1f5;
+    --paper: #ffffff;
+    --navy: #123a5e;
+    --teal: #0d8b80;
+    --amber: #b4690e;
+    --rose: #a83232;
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro SC", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    width: min(1360px, 96vw);
+    margin: 0 auto;
+    padding: 34px 22px 80px;
+  }
+
+  .sheet {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 10px 34px rgba(18, 40, 62, .09);
+    padding: 40px 44px 36px;
+  }
+
+  /* ---------- header ---------- */
+  .kicker {
+    font-size: 12.5px; letter-spacing: .14em; color: var(--teal);
+    font-weight: 700; margin-bottom: 10px;
+  }
+  h1 {
+    font-size: 29px; line-height: 1.32; margin: 0 0 6px;
+    letter-spacing: -.01em; font-weight: 750; color: var(--navy);
+  }
+  .subtitle {
+    color: var(--muted); font-size: 14px; margin: 0 0 18px;
+    padding-bottom: 16px; border-bottom: 1px solid var(--line-2);
+  }
+
+  /* ---------- legend ---------- */
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 8px 22px;
+    align-items: center; margin-bottom: 22px;
+    font-size: 12.5px; color: var(--ink-2);
+  }
+  .legend .item { display: inline-flex; align-items: center; gap: 6px; }
+  .dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    display: inline-block; flex: none;
+  }
+  .dot.ok      { background: var(--teal); }
+  .dot.partial { background: var(--amber); }
+  .dot.gap     { background: var(--rose); }
+  .dot.later   { background: #b3bfc9; }
+
+  .lever {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 17px; height: 17px; padding: 0 4px;
+    border-radius: 5px; background: var(--navy); color: #fff;
+    font-size: 11px; font-weight: 750; line-height: 1; flex: none;
+  }
+
+  .legend .sep { width: 1px; height: 15px; background: var(--line); }
+
+  /* ---------- top band: 服务对象 ---------- */
+  .band {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    margin-bottom: 12px;
+  }
+  .who {
+    border: 1px solid var(--line); border-radius: 11px;
+    background: linear-gradient(180deg, #f7fafb 0%, #fbfcfd 100%);
+    padding: 11px 15px;
+  }
+  .who .wt {
+    font-weight: 750; color: var(--navy); font-size: 13.5px;
+    display: block; margin-bottom: 1px;
+  }
+  .who .wd { font-size: 12px; color: var(--muted); line-height: 1.5; display: block; }
+
+  .flow {
+    text-align: center; color: var(--teal);
+    font-size: 15px; line-height: 1; margin: 2px 0 12px;
+  }
+
+  /* ---------- main stack + rail ---------- */
+  .stack {
+    display: grid;
+    grid-template-columns: 1fr 226px;
+    gap: 12px;
+    align-items: stretch;
+  }
+  .layers { display: flex; flex-direction: column; gap: 10px; }
+
+  /* ---------- layer ---------- */
+  .layer {
+    display: grid;
+    grid-template-columns: 162px 1fr;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    background: var(--paper);
+  }
+  .lname {
+    padding: 13px 14px;
+    background: #f5f8fa;
+    border-right: 1px solid var(--line);
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .lnum {
+    font-size: 11px; font-weight: 750; letter-spacing: .1em;
+    color: var(--teal); display: block; margin-bottom: 2px;
+  }
+  .lt {
+    font-weight: 750; color: var(--navy); font-size: 14.5px;
+    line-height: 1.35; display: block;
+  }
+  .lsub {
+    font-size: 11.5px; color: var(--muted); line-height: 1.45;
+    display: block; margin-top: 3px;
+  }
+  .lbody { padding: 12px 14px; }
+
+  /* 强调层：设备层为最高优先级 */
+  .layer.key .lname { background: #eef6f5; }
+  .layer.key { border-color: #bfded9; }
+  .layer.dim .lname { background: #f7f8f9; }
+  .layer.dim .lt { color: var(--ink-2); }
+
+  /* ---------- module groups ---------- */
+  .groups { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .group > h4 {
+    margin: 0 0 7px; font-size: 12px; font-weight: 750;
+    color: var(--navy); letter-spacing: .04em;
+    padding-bottom: 5px; border-bottom: 1px dashed var(--line);
+  }
+
+  .mods { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .mods li {
+    display: inline-flex; align-items: center; gap: 5px;
+    border: 1px solid var(--line);
+    background: #fbfcfd;
+    border-radius: 8px;
+    padding: 5px 9px;
+    font-size: 12.5px;
+    color: var(--ink-2);
+    line-height: 1.35;
+  }
+  .mods li::before {
+    content: ""; width: 7px; height: 7px; border-radius: 50%;
+    background: #b3bfc9; flex: none;
+  }
+  .mods li.ok::before      { background: var(--teal); }
+  .mods li.partial::before { background: var(--amber); }
+  .mods li.gap::before     { background: var(--rose); }
+  .mods li.later::before   { background: #b3bfc9; }
+
+  .mods li.ok      { border-color: #cfe6e3; background: #f6fbfa; }
+  .mods li.partial { border-color: #eeddc2; background: #fdfaf5; }
+  .mods li.gap     { border-color: #eccfcf; background: #fdf7f7; color: var(--ink); font-weight: 620; }
+  .mods li.later   { color: var(--muted); }
+
+  .mods li .lever { margin-left: 2px; }
+
+  /* ---------- right rail: 横向专项 ---------- */
+  .rail {
+    border: 1px solid #cddbe6;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #f4f8fa 0%, #f9fbfc 100%);
+    padding: 13px 14px;
+    display: flex; flex-direction: column;
+  }
+  .rail > h3 {
+    margin: 0 0 3px; font-size: 13.5px; font-weight: 750; color: var(--navy);
+  }
+  .rail > .rsub {
+    font-size: 11.5px; color: var(--muted); line-height: 1.45;
+    margin: 0 0 11px; padding-bottom: 10px; border-bottom: 1px dashed #cddbe6;
+  }
+  .spec {
+    border: 1px solid var(--line); border-radius: 9px;
+    background: var(--paper); padding: 9px 11px; margin-bottom: 8px;
+  }
+  .spec:last-child { margin-bottom: 0; }
+  .spec .st {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12.8px; font-weight: 720; color: var(--navy); margin-bottom: 3px;
+  }
+  .spec .sd { font-size: 11.5px; color: var(--muted); line-height: 1.5; }
+  .spec.build { border-color: #eccfcf; background: #fdf9f9; }
+
+  /* ---------- footnotes ---------- */
+  .notes {
+    margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line-2);
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+  }
+  .note .nt {
+    font-size: 12px; font-weight: 750; color: var(--navy);
+    display: block; margin-bottom: 3px;
+  }
+  .note .nd { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  /* ---------- toolbar ---------- */
+  #bar {
+    position: fixed; right: 20px; bottom: 18px; z-index: 60;
+    display: flex; gap: 8px; align-items: center;
+    background: rgba(255,255,255,.94); border: 1px solid var(--line);
+    border-radius: 999px; padding: 6px 8px;
+    box-shadow: 0 6px 20px rgba(18,40,62,.12);
+    backdrop-filter: blur(6px);
+  }
+  #bar button {
+    border: 1px solid var(--line); background: #fff; color: var(--ink-2);
+    border-radius: 999px; padding: 5px 13px; font-size: 12.5px;
+    cursor: pointer; font-family: inherit; font-weight: 650;
+  }
+  #bar button:hover { border-color: var(--teal); color: var(--teal); }
+  #bar button.on { background: var(--navy); border-color: var(--navy); color: #fff; }
+
+  /* 聚焦明年：非明年重点模块淡出 */
+  body.focus .mods li:not(.gap):not(.partial) { opacity: .32; }
+  body.focus .layer.dim { opacity: .5; }
+
+  @media print {
+    @page { size: A3 landscape; margin: 10mm; }
+    html, body { background: #fff; }
+    .page { width: 100%; padding: 0; }
+    .sheet { border: none; box-shadow: none; padding: 0; }
+    #bar { display: none !important; }
+  }
+
+  @media (max-width: 1100px) {
+    .stack { grid-template-columns: 1fr; }
+    .groups { grid-template-columns: repeat(2, 1fr); }
+    .band { grid-template-columns: repeat(2, 1fr); }
+    .layer { grid-template-columns: 1fr; }
+    .lname { border-right: none; border-bottom: 1px solid var(--line); }
+    .notes { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+<div class="sheet">
+
+  <div class="kicker">共享两轮 SaaS · 产品架构全景</div>
+  <h1>四层能力架构，与明年四个抓手的落点</h1>
+  <p class="subtitle">纵向是既有的四层能力分层，横向是跨层专项。颜色标注当前成熟度，编号标注明年四个抓手的落点。</p>
+
+  <div class="legend">
+    <span class="item"><i class="dot ok"></i>已具备</span>
+    <span class="item"><i class="dot partial"></i>部分具备 / 待收敛</span>
+    <span class="item"><i class="dot gap"></i>缺失，明年新建或补齐</span>
+    <span class="item"><i class="dot later"></i>明年不铺开</span>
+    <span class="sep"></span>
+    <span class="item"><i class="lever">①</i>设备接入框架化</span>
+    <span class="item"><i class="lever">②</i>开城流程线上化</span>
+    <span class="item"><i class="lever">③</i>迁移工程能力</span>
+    <span class="item"><i class="lever">④</i>培训与协作自助化</span>
+  </div>
+
+  <!-- ============ 服务对象 ============ -->
+  <div class="band">
+    <div class="who"><span class="wt">C 端 · 骑行用户</span><span class="wd">扫码用车、支付、会员卡券</span></div>
+    <div class="who"><span class="wt">B 端 · 运营商</span><span class="wd">自营马甲 7 个 + 第三方 12 个，明年 60-70</span></div>
+    <div class="who"><span class="wt">G 端 · 城市监管</span><span class="wd">数据报送、围栏、备案与配额</span></div>
+    <div class="who"><span class="wt">运维与资产</span><span class="wd">调度、换电、维修、库存</span></div>
+  </div>
+  <div class="flow">▼</div>
+
+  <div class="stack">
+    <div class="layers">
+
+      <!-- ---------- 智能运营层 ---------- -->
+      <section class="layer dim">
+        <div class="lname">
+          <span class="lnum">明年不铺开</span>
+          <span class="lt">智能运营层</span>
+          <span class="lsub">只做与迁移和降本强相关的部分</span>
+        </div>
+        <div class="lbody">
+          <ul class="mods">
+            <li class="partial">基础运营配置</li>
+            <li class="partial">B 端风控（明年做基础）</li>
+            <li class="partial">车辆调度（明年做基础）</li>
+            <li class="partial">C 端基础营销（保活跃）</li>
+            <li class="later">精细化运营策略</li>
+            <li class="later">智能定价</li>
+            <li class="later">AI 调度算法</li>
+            <li class="later">个性化经营看板</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ---------- 模块化 SaaS 功能层 ---------- -->
+      <section class="layer">
+        <div class="lname">
+          <span class="lnum">定向补齐</span>
+          <span class="lt">模块化 SaaS 功能层</span>
+          <span class="lsub">基础齐备，按 P0 / P1 分档补齐</span>
+        </div>
+        <div class="lbody">
+          <div class="groups">
+
+            <div class="group">
+              <h4>C 端</h4>
+              <ul class="mods">
+                <li class="ok">小程序 / H5</li>
+                <li class="ok">扫码开关锁</li>
+                <li class="ok">支付与押金</li>
+                <li class="ok">行程与计费</li>
+                <li class="ok">会员与卡券</li>
+                <li class="gap">用户资产迁移<i class="lever">③</i></li>
+              </ul>
+            </div>
+
+            <div class="group">
+              <h4>B 端</h4>
+              <ul class="mods">
+                <li class="ok">多品牌多主体</li>
+                <li class="ok">订单与运营管理</li>
+                <li class="gap">账号与权限线上化<i class="lever">②</i></li>
+                <li class="gap">计费分账 · 出账对账</li>
+                <li class="partial">报表与经营分析</li>
+                <li class="partial">运维派单</li>
+                <li class="partial">批量操作</li>
+              </ul>
+            </div>
+
+            <div class="group">
+              <h4>资产端</h4>
+              <ul class="mods">
+                <li class="ok">车辆档案与生命周期</li>
+                <li class="ok">维修保养</li>
+                <li class="ok">库存与仓储</li>
+                <li class="partial">电池与电柜管理</li>
+                <li class="gap">混合车队管理（新增）</li>
+              </ul>
+            </div>
+
+            <div class="group">
+              <h4>G 端</h4>
+              <ul class="mods">
+                <li class="partial">监管数据报送</li>
+                <li class="partial">电子围栏与禁停区</li>
+                <li class="partial">车辆备案与投放配额</li>
+                <li class="gap">监管接口库 + 配置化</li>
+              </ul>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- 设备层 ---------- -->
+      <section class="layer key">
+        <div class="lname">
+          <span class="lnum">最高优先级</span>
+          <span class="lt">设备层</span>
+          <span class="lsub">这层做不好，上面所有软件能力无处落地</span>
+        </div>
+        <div class="lbody">
+          <ul class="mods">
+            <li class="ok">自有中控接入</li>
+            <li class="partial">外部中控协议适配（现为逐个适配）</li>
+            <li class="gap">协议适配框架化<i class="lever">①</i></li>
+            <li class="gap">协议库沉淀<i class="lever">①</i></li>
+            <li class="gap">自助接入工具<i class="lever">①</i></li>
+            <li class="gap">兼容性白名单<i class="lever">①</i></li>
+            <li class="partial">头盔佩戴检测</li>
+            <li class="partial">载重检测</li>
+            <li class="partial">G 端政策硬件协议</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- ---------- 生态链接层 ---------- -->
+      <section class="layer dim">
+        <div class="lname">
+          <span class="lnum">依托主业</span>
+          <span class="lt">生态链接层</span>
+          <span class="lsub">继续依托青桔，但接口要标准化抽象</span>
+        </div>
+        <div class="lbody">
+          <ul class="mods">
+            <li class="later">车辆供应链（依赖青桔）</li>
+            <li class="later">电池（依赖青桔）</li>
+            <li class="later">换电柜（依赖青桔）</li>
+            <li class="partial">三方支付与账户</li>
+            <li class="gap">对接接口标准化抽象</li>
+          </ul>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ---------- 横向专项 ---------- -->
+    <aside class="rail">
+      <h3>横向专项</h3>
+      <p class="rsub">跨层能力，不属于任何单层。明年四个抓手中的三个落在这里。</p>
+
+      <div class="spec build">
+        <div class="st"><span class="lever">③</span>迁移工程能力</div>
+        <div class="sd">今天完全没有，需从 0 新建：可行性评估、数据映射校验、双系统并行比对、分批灰度切换、回滚预案。建议独立立项。</div>
+      </div>
+
+      <div class="spec build">
+        <div class="st"><span class="lever">②</span>开城流程线上化</div>
+        <div class="sd">准入材料清单、进度看板、状态提醒与自动催办。准入从约 3 周压到 10 天。</div>
+      </div>
+
+      <div class="spec build">
+        <div class="st"><span class="lever">④</span>培训与协作自助化</div>
+        <div class="sd">自助学习中心、场景化引导、沙箱演练、商户协作入口。单商产品支持从约 2 人天降到 0.4 人天。</div>
+      </div>
+
+      <div class="spec">
+        <div class="st">商务承接支撑</div>
+        <div class="sd">兼容性前置评估、标准化售前与报价配置、迁移可行性评估。</div>
+      </div>
+
+      <div class="spec">
+        <div class="st">统一数据底座</div>
+        <div class="sd">三年节奏的第一年：统一数据模型与埋点规范，为第二年算法能力铺路。</div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ---------- 脚注 ---------- -->
+  <div class="notes">
+    <div class="note">
+      <span class="nt">怎么看这张图</span>
+      <span class="nd">红点集中在设备层和横向专项，说明家底不薄、缺的是「低成本复制」的能力，而不是功能本身。</span>
+    </div>
+    <div class="note">
+      <span class="nt">抓手①为什么在层内</span>
+      <span class="nd">设备接入是实打实的一层能力；②③④ 是跨层流程与工程能力，所以放在右侧横向专项。</span>
+    </div>
+    <div class="note">
+      <span class="nt">结算对账为什么不是抓手</span>
+      <span class="nd">它是 B 端的 P0 功能项，按阻断程度进优先级、随迁移客户上线必须就绪，但不构成横向抓手。</span>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<div id="bar">
+  <button id="tFocus">聚焦明年重点</button>
+  <button id="tPrint">导出 PDF</button>
+</div>
+
+<script>
+  document.getElementById('tFocus').addEventListener('click', function () {
+    this.classList.toggle('on', document.body.classList.toggle('focus'));
+  });
+  document.getElementById('tPrint').addEventListener('click', function () {
+    window.print();
+  });
+</script>
+
+</body>
+</html>
